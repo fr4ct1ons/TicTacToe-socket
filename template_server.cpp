@@ -97,7 +97,14 @@ int main () {
         sendString(msg, conn1_socket, client1_addr);
         sendString(msg, conn2_socket, client2_addr);
         receiveString(conn1_socket, client1_addr, &msg);
-        std::cout << "Cross player printed at " << msg << std::endl;
+        std::cout << "Cross player sent " << msg << std::endl;
+
+        if(msg == cmds::leaveMatch)
+        {
+            msg = cmds::otherPlayerLeft;
+            sendString(msg, conn2_socket, client2_addr);
+            break;
+        }
 
         int crossCell = 0;
         crossCell = std::atoi(msg.c_str());
@@ -140,7 +147,14 @@ int main () {
         sendString(msg, conn1_socket, client1_addr);
         sendString(msg, conn2_socket, client2_addr);
         receiveString(conn2_socket, client2_addr, &msg);
-        std::cout << "circle player printed at " << msg << std::endl;
+        std::cout << "circle player sent " << msg << std::endl;
+
+        if(msg == cmds::leaveMatch)
+        {
+            msg = cmds::otherPlayerLeft;
+            sendString(msg, conn1_socket, client1_addr);
+            break;
+        }
 
         int circleCell = 0;
         circleCell = std::atoi(msg.c_str());

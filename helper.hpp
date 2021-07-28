@@ -36,4 +36,6 @@ namespace cmds
     const string circleWins = "CIRCLE_WINS";
     const string crossWins = "CROSS_WINS";
     const string draw = "DRAW_GAME";
+    const string leaveMatch = "LEAVE_MATCH";
+    const string otherPlayerLeft = "OTHER_PLAYER_HASLEFT";
 }

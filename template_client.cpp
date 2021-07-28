@@ -69,6 +69,8 @@ int main () {
         std::cout << "You will play as cross." << std::endl;
     }
 
+    int command = 0;
+
     game_state s;
     while (true) {
         int bytesIn = receiveString(conn_socket, server_addr, &msg);
@@ -84,7 +86,12 @@ int main () {
             s.print_board();
         }
 
-        if(msg == cmds::draw)
+        if(msg == cmds::otherPlayerLeft)
+        {
+            std::cout << "The other player has left the match." << std::endl;
+            break;
+        }
+        else if(msg == cmds::draw)
         {
             std::cout << "There was a DRAW! No player has won..." << std::endl;
             break;
@@ -123,27 +130,54 @@ int main () {
                 int cell = -1;
                 while(cell == -1)
                 {
-                    std::cout << "It's your turn. Enter which cell you want to play at." << std::endl;
-                    std::cin >> cell;
-                    if(cell >= 0 && cell <= 8)
+                    std::cout << "It's your turn. Enter the command you want to send.\n";
+                    std::cout << "1 - Set a cell as circle\n";
+                    std::cout << "2 - Print the board\n";
+                    std::cout << "3 - Leave the match" << std::endl;
+                    std::cin >> command;
+                    if(command == 2)
                     {
-                        if(s.board[cell] == ' ')
+                        s.print_board();
+                    }
+                    else if(command == 3)
+                    {
+                        msg = cmds::leaveMatch;
+                        sendString(msg, conn_socket, server_addr);
+                        std::cout << "Leaving match." << std::endl;
+                        shutdown(conn_socket, SD_BOTH);
+                        closesocket(conn_socket);
+
+                        WSACleanup();
+                        return 0;
+                    }
+                    else if(command == 1)
+                    {
+                        std::cout << "Please, insert which cell you want to play at." << std::endl;
+                        std::cin >> cell;
+                        if(cell >= 0 && cell <= 8)
                         {
-                            char val[50];
-                            itoa(cell, val, 10);
-                            msg = val;
-                            sendString(msg, conn_socket, server_addr);
+                            if(s.board[cell] == ' ')
+                            {
+                                char val[50];
+                                itoa(cell, val, 10);
+                                msg = val;
+                                sendString(msg, conn_socket, server_addr);
+                            }
+                            else
+                            {
+                                std::cout << "There is already a '" << s.board[cell] << "' at the selected cell." << std::endl;
+                                cell = -1;
+                            }
                         }
                         else
                         {
-                            std::cout << "There is already a '" << s.board[cell] << "' at the selected cell." << std::endl;
+                            std::cout << "Invalid cell!" << std::endl;
                             cell = -1;
                         }
                     }
                     else
                     {
-                        std::cout << "Invalid cell!" << std::endl;
-                        cell = -1;
+                        std::cout << "Invalid command! Please, send a valid command, between 1 and 3. " << std::endl;
                     }
                 }
             }
@@ -158,27 +192,54 @@ int main () {
                 int cell = -1;
                 while(cell == -1)
                 {
-                    std::cout << "It's your turn. Enter which cell you want to play at." << std::endl;
-                    std::cin >> cell;
-                    if(cell >= 0 && cell <= 8)
+                    std::cout << "It's your turn. Enter the command you want to send.\n";
+                    std::cout << "1 - Set a cell as cross\n";
+                    std::cout << "2 - Print the board\n";
+                    std::cout << "3 - Leave the match" << std::endl;
+                    std::cin >> command;
+                    if(command == 2)
                     {
-                        if(s.board[cell] == ' ')
+                        s.print_board();
+                    }
+                    else if(command == 3)
+                    {
+                        msg = cmds::leaveMatch;
+                        sendString(msg, conn_socket, server_addr);
+                        std::cout << "Leaving match." << std::endl;
+                        shutdown(conn_socket, SD_BOTH);
+                        closesocket(conn_socket);
+
+                        WSACleanup();
+                        return 0;
+                    }
+                    else if(command == 1)
+                    {
+                        std::cout << "Please, insert which cell you want to play at." << std::endl;
+                        std::cin >> cell;
+                        if(cell >= 0 && cell <= 8)
                         {
-                            char val[50];
-                            itoa(cell, val, 10);
-                            msg = val;
-                            sendString(msg, conn_socket, server_addr);
+                            if(s.board[cell] == ' ')
+                            {
+                                char val[50];
+                                itoa(cell, val, 10);
+                                msg = val;
+                                sendString(msg, conn_socket, server_addr);
+                            }
+                            else
+                            {
+                                std::cout << "There is already a '" << s.board[cell] << "' at the selected cell." << std::endl;
+                                cell = -1;
+                            }
                         }
                         else
                         {
-                            std::cout << "There is already a '" << s.board[cell] << "' at the selected cell." << std::endl;
+                            std::cout << "Invalid cell!" << std::endl;
                             cell = -1;
                         }
                     }
                     else
                     {
-                        std::cout << "Invalid cell!" << std::endl;
-                        cell = -1;
+                        std::cout << "Invalid command! Please, send a valid command, between 1 and 3. " << std::endl;
                     }
                 }
             }
